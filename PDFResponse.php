@@ -307,8 +307,22 @@ class PdfResponse extends Object implements \Nette\Application\IResponse {
 	}
 
 	/**
+	 * Saves file
+	 * @param string $filename
+	 */
+	public function saveFile($filename = '')
+	{
+		$this->outputDestination = self::OUTPUT_DOWNLOAD;
+
+		if ($filename !== '') {
+			$this->outputName = $filename;
+		}
+
+		$this->sendResponse();
+	}
+
+	/**
 	 * Sends response to output
-	 *
 	 * @throws \Nette\InvalidStateException
 	 * @return void
 	 */
