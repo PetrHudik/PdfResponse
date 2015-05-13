@@ -303,9 +303,19 @@ class PdfResponse extends Object implements \Nette\Application\IResponse {
 	 * @return void
 	 */
 	public function send(IRequest $httpRequest, IResponse $httpResponse) {
+		$this->sendResponse();
+	}
+
+	/**
+	 * Sends response to output
+	 *
+	 * @throws \Nette\InvalidStateException
+	 * @return void
+	 */
+	public function sendResponse() {
 		// Throws exception if sources can not be processed
 		$html = $this->getSource();
-		
+
 		// Fix: $html can't be empty (mPDF generates Fatal error)
 		if(empty($html)) {
 			$html = "<html><body></body></html>";
@@ -351,10 +361,10 @@ class PdfResponse extends Object implements \Nette\Application\IResponse {
 				$mime = substr($element->src, $pos1, $pos2-$pos1);
 				$boundary = "base64,";
 				$base64 = substr($element->src, $pos2+strlen($boundary)+1);
-				
+
 				$data = base64_decode($base64);
 				if($data === false) continue;
-				
+
 				$propertyName = "base64Image".$i;
 				$mpdf->$propertyName = $data;
 				$element->src = "var:".$propertyName;
@@ -386,7 +396,6 @@ class PdfResponse extends Object implements \Nette\Application\IResponse {
 
 		$mpdf->Output($this->outputName,$this->outputDestination);
 	}
-
 
 	/**
 	 * Returns mPDF object
